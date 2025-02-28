@@ -8,7 +8,7 @@ db is database which contains the data and seeds folder as well as the connectio
     .env.development
     .env.test
 
-* please ensure <.env.*> is the gitignore file along with node_modules as this will ensure sensitive information to be kept outside of github files
+* please ensure __.env.* is the gitignore file along with node_modules as this will ensure sensitive information to be kept outside of github files
 
 
 more details coming soon...
