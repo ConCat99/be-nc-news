@@ -38,3 +38,21 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+describe('format article', () => {
+    test('Returns article_id when article_title', () => {
+      //Arrange
+      
+      //Act
+    
+      //Assert
+  
+    });
+    xtest('', () => {
+      //Arrange
+      
+     //Act
+      
+     //Assert
+  
+    });
+});

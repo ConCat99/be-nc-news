@@ -411,7 +411,7 @@ describe('seed', () => {
     });
     test('users data has been inserted correctly', () => {
       return db.query(`SELECT * FROM users;`).then(({ rows: users }) => {
-        expect(users).toHaveLength(4);
+        expect(users).toHaveLength(6); //<<<<<<changed from 4 to 6??-- Connie
         users.forEach((user) => {
           expect(user).toHaveProperty('username');
           expect(user).toHaveProperty('name');
