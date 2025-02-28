@@ -1,8 +1,8 @@
 ### Thank you for reading me
 
 >### In this repo here we have the following:
-     __tests__ folder
-     db is database which contains the data and seeds folder as well as the connection json file
+__tests__ folder
+db is database which contains the data and seeds folder as well as the connection json file
 
 ### You will have to make your own .env files locally:
     .env.development
