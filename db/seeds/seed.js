@@ -34,10 +34,13 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
 		})
 		.then(() => {
 			return insertArticleData(articleData);
+		})
+		.then(({ rows }) => {
+			return insertCommentsData(commentData, rows);
+		})
+		.then(({ rows }) => {
+			console.log(rows);
 		});
-	// .then(() => {
-	// 	return insertCommentsData(commentData);
-	// });
 };
 
 function createTopics() {
@@ -124,17 +127,22 @@ function insertArticleData(articleData) {
 		];
 	});
 	const formattedArticlesStr = pgFormat(
-		`INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L`,
+		`INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *`,
 		formattedArticles
 	);
 	return db.query(formattedArticlesStr);
 }
 
-/* function insertCommentsData(commentData) {
+function insertCommentsData(commentData, articles) {
+	const articleTitleIds = {};
+	articles.forEach((article) => {
+		articleTitleIds[article.title] = article.article_id;
+	});
 	const formattedComments = commentData.map((comment) => {
+		const articleID = articleTitleIds[comment.article_title];
 		const convertedComment = convertTimestampToDate(comment);
 		return [
-			comment.article_id,'cats',
+			articleID,
 			comment.body,
 			comment.votes,
 			comment.author,
@@ -142,10 +150,10 @@ function insertArticleData(articleData) {
 		];
 	});
 	const formattedCommentsStr = pgFormat(
-		`INSERT INTO comments(article_id, body, votes, author, created_cat) VALUES &L`,
+		`INSERT INTO comments(article_id, body, votes, author, created_at) VALUES %L RETURNING *`,
 		formattedComments
 	);
 	return db.query(formattedCommentsStr);
 }
- */
+
 module.exports = seed;
