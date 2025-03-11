@@ -4,6 +4,7 @@ const {
 	getTopics,
 	getEndpoints,
 	getArticleByID,
+	getArticles,
 } = require('./controllers/topics.controller');
 const {
 	handleServerErrors,
@@ -18,6 +19,8 @@ app.get('/api', getEndpoints);
 app.get('/api/topics', getTopics);
 
 app.get('/api/articles/:article_id', getArticleByID);
+
+app.get('/api/articles', getArticles);
 
 //Catches requests to nonexistent routes
 app.all('/*', handleNotARoute);

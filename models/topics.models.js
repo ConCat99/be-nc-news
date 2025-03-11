@@ -23,3 +23,21 @@ exports.selectArticleByID = (article_id) => {
 			return rows[0];
 		});
 };
+
+exports.selectAllArticles = () => {
+	return db
+		.query(
+			` SELECT articles.author,
+						title,
+						articles.article_id,
+						topic,
+						articles.created_at,
+						articles.votes,
+						articles.article_img_url,
+						COUNT (comments.comment_id)::INTEGER AS comment_count
+						FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id`
+		)
+		.then(({ rows }) => {
+			return rows;
+		});
+};
