@@ -4,6 +4,7 @@ const request = require('supertest');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
+const sorted = require('jest-sorted');
 
 beforeEach(() => {
 	return seed(testData);
@@ -33,7 +34,7 @@ describe('GET /api', () => {
 });
 
 describe('GET: /api/topics', () => {
-	test('200: Responds with an object containing all topics', () => {
+	test('200: Responds with an array of objects containing all topics properties', () => {
 		// Arrange	// Act
 		return request(app)
 			.get('/api/topics')
@@ -65,21 +66,66 @@ describe('GET: /api/articles/:article_id', () => {
 				expect(typeof article.article_img_url).toBe('string');
 			});
 	});
+	test('404: Respond with not found if article_id does not exist in database', () => {
+		// Arrange// Act
+		return request(app)
+			.get('/api/articles/888')
+			.expect(404)
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('Not Found');
+			});
+	});
+	test('400: Responds with Bad request if article_id is not a number', () => {
+		return request(app)
+			.get('/api/articles/notANumber')
+			.expect(400)
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('bad request');
+			});
+	});
 });
-test('404: Respond with not found if article_id does not exist in database', () => {
-	// Arrange// Act
-	return request(app)
-		.get('/api/articles/888')
-		.expect(404)
-		.then(({ body: { msg } }) => {
-			expect(msg).toBe('Not Found');
-		});
-});
-test('400: Responds with Bad request if article_id is not a number', () => {
-	return request(app)
-		.get('/api/articles/notANumber')
-		.expect(400)
-		.then(({ body: { msg } }) => {
-			expect(msg).toBe('bad request');
-		});
+describe('GET: /api/articles', () => {
+	test('200: Responds with an articles array with objects containing all article properties', () => {
+		return request(app)
+			.get('/api/articles')
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.articles.length).toBe(13);
+				body.articles.forEach(
+					({
+						author,
+						title,
+						article_id,
+						topic,
+						created_at,
+						votes,
+						article_img_url,
+						comment_count,
+					}) => {
+						expect(typeof author).toBe('string');
+						expect(typeof title).toBe('string');
+						expect(typeof comment_count).toBe('number');
+						expect(typeof topic).toBe('string');
+						expect(typeof created_at).toBe('object');
+						expect(typeof votes).toBe('number');
+						expect(typeof article_img_url).toBe('string');
+						expect(typeof article_id).toBe('number');
+					}
+				);
+			});
+	});
+	xtest('200: Responds with an array list of article objects sorted by date in descending order ', () => {
+		return request(app)
+			.get('/api/articles?sort_by=date')
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.articles.length).toBe(13);
+				//Arrange//Act
+				// const articlesCopy = [...body.articles];
+				// .sort((a, b) => a.date - b.date);
+				// //Assert
+				// expect(body.treasures).toEqual(articlesCopy);
+				expect(body.articles).toBeSortedBy('created_by', { descending: true });
+			});
+	});
 });
