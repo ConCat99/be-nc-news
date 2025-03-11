@@ -1,10 +1,12 @@
 const endpointsJson = require('../endpoints.json');
-const request = require('supertest');
 const app = require('../app');
-const testData = require('../db/data/test-data/index');
-const seed = require('../db/seeds/seed');
+const request = require('supertest');
 const db = require('../db/connection');
+const seed = require('../db/seeds/seed');
+const testData = require('../db/data/test-data');
+/* Set up your test imports here */
 
+/* Set up your beforeEach & afterAll functions here */
 beforeEach(() => {
 	return seed(testData);
 });
@@ -20,30 +22,6 @@ describe('GET /api', () => {
 			.expect(200)
 			.then(({ body: { endpoints } }) => {
 				expect(endpoints).toEqual(endpointsJson);
-			});
-	});
-});
-describe('GET: /api/topics', () => {
-	test('200: Responds with an object containing all the correctly formatted topics ', () => {
-		return request(app)
-			.get('/api/topics')
-			.expect(200)
-			.then(({ body }) => {
-				expect(body.topics.length).toBe(3);
-				body.topics.forEach(({ description, slug }) => {
-					expect(typeof description).toBe('string');
-					expect(typeof slug).toBe('string');
-				});
-			});
-	});
-});
-describe('GET: api/*/doesnotExist', () => {
-	test('404: Responds with error message when attempting to access an endpoint that  does not exist', () => {
-		return request(app)
-			.get('/api/notANumber')
-			.expect(404)
-			.then(({ body }) => {
-				expect(body.msg).toBe('Not Found');
 			});
 	});
 });

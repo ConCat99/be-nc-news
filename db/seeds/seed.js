@@ -38,9 +38,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
 		.then(({ rows }) => {
 			return insertCommentsData(commentData, rows);
 		})
-		.then(({ rows }) => {
-			console.log(rows);
-		});
+		.then(({ rows }) => {});
 };
 
 function createTopics() {
