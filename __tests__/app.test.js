@@ -24,4 +24,28 @@ describe('GET /api', () => {
 				expect(endpoints).toEqual(endpointsJson);
 			});
 	});
+	test('404: /*', () => {
+		return request(app)
+			.get('/api/*NotAPath')
+			.expect(404)
+			.then(({ body }) => {
+				expect(body.msg).toBe('Not Found');
+			});
+	});
+});
+
+describe('GET: /api/topics', () => {
+	test('200: Responds with an object containing all topics', () => {
+		// Arrange	// Act
+		return request(app)
+			.get('/api/topics')
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.topics.length).toBe(3);
+				body.topics.forEach(({ slug, description }) => {
+					expect(typeof slug).toBe('string');
+					expect(typeof description).toBe('string');
+				});
+			});
+	});
 });
