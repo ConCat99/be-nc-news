@@ -48,6 +48,29 @@
 			"article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
 		}
 	},
+	"GET: api/articles?sort_by=date": {
+		"description": "Serves an array list of article objects sorted by date in descending order by default",
+		"queries": [
+			"author",
+			"title",
+			"article_id",
+			"body",
+			"topic",
+			"created_at",
+			"votes",
+			"article_img_url"
+		],
+		"exampleResponse": {
+			"author": "rogersop",
+			"title": "Student SUES Mitch!",
+			"article_id": 4,
+			"topic": "mitch",
+			"created_at": null,
+			"votes": 0,
+			"article_img_url": " https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+			"comment_count": 0
+		}
+	},
 	"HTTPMETHOD: /path": {
 		"description": "",
 		"queries": [],
