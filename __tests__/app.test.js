@@ -4,7 +4,7 @@ const request = require('supertest');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
-const sorted = require('jest-sorted');
+require('jest-sorted');
 
 beforeEach(() => {
 	return seed(testData);
@@ -114,18 +114,13 @@ describe('GET: /api/articles', () => {
 				);
 			});
 	});
-	xtest('200: Responds with an array list of article objects sorted by date in descending order ', () => {
+	test('200: Responds with an array list of article objects sorted by date in descending order ', () => {
 		return request(app)
 			.get('/api/articles?sort_by=date')
 			.expect(200)
 			.then(({ body }) => {
 				expect(body.articles.length).toBe(13);
-				//Arrange//Act
-				// const articlesCopy = [...body.articles];
-				// .sort((a, b) => a.date - b.date);
-				// //Assert
-				// expect(body.treasures).toEqual(articlesCopy);
-				expect(body.articles).toBeSortedBy('created_by', { descending: true });
+				expect(body.articles).toBeSortedBy('created_at', { descending: true });
 			});
 	});
 });

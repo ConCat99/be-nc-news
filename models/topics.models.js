@@ -24,10 +24,15 @@ exports.selectArticleByID = (article_id) => {
 		});
 };
 
-exports.selectAllArticles = () => {
-	return db
-		.query(
-			` SELECT articles.author,
+exports.selectAllArticles = (sort_by = 'created_at') => {
+	const permittedSorts = {
+		topic: 'topic',
+		date: 'created_at',
+		author: 'author',
+	};
+	const sortCategories = permittedSorts[sort_by];
+
+	let sort_byStr = ` SELECT articles.author,
 						title,
 						articles.article_id,
 						topic,
@@ -35,9 +40,12 @@ exports.selectAllArticles = () => {
 						articles.votes,
 						articles.article_img_url,
 						COUNT (comments.comment_id)::INTEGER AS comment_count
-						FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id`
-		)
-		.then(({ rows }) => {
-			return rows;
-		});
+						FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY ${sort_by} DESC`;
+
+	return db.query(sort_byStr).then(({ rows }) => {
+		if (rows.length === 0) {
+			return Promise.reject({ status: 404, msg: 'not found' });
+		}
+		return rows;
+	});
 };
