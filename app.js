@@ -26,7 +26,7 @@ app.get('/api/articles', getArticles);
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleID);
 
-app.post('/api/articles/:article_id/comments', addComment);
+// app.post('/api/articles/:article_id/comments', addComment);
 
 //Catches requests to nonexistent routes
 app.all('/*', handleNotARoute);
