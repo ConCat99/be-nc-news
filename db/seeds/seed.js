@@ -69,7 +69,7 @@ function createArticles() {
     topic VARCHAR(50) REFERENCES topics(slug),
     author VARCHAR(50) NOT NULL REFERENCES users(username),
     body TEXT,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     votes INT DEFAULT 0,
     article_img_url VARCHAR(1000)
       );
@@ -84,7 +84,7 @@ function createComments() {
     body TEXT,
     votes INT,
     author VARCHAR(50) REFERENCES users(username),
-    created_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
   `);
 }
@@ -119,7 +119,7 @@ function insertArticleData(articleData) {
 			convertedArticle.topic,
 			convertedArticle.author,
 			convertedArticle.body,
-			convertedArticle.create_at,
+			convertedArticle.created_at,
 			convertedArticle.votes || 0,
 			convertedArticle.article_img_url,
 		];
