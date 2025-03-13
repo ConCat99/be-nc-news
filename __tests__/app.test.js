@@ -61,7 +61,7 @@ describe('GET: /api/articles/:article_id', () => {
 				expect(typeof article.title).toBe('string');
 				expect(typeof article.body).toBe('string');
 				expect(typeof article.topic).toBe('string');
-				expect(typeof article.created_at).toBe('object');
+				expect(typeof article.created_at).toBe('string');
 				expect(typeof article.votes).toBe('number');
 				expect(typeof article.article_img_url).toBe('string');
 			});
@@ -106,7 +106,7 @@ describe('GET: /api/articles', () => {
 						expect(typeof title).toBe('string');
 						expect(typeof comment_count).toBe('number');
 						expect(typeof topic).toBe('string');
-						expect(typeof created_at).toBe('object');
+						expect(typeof created_at).toBe('string');
 						expect(typeof votes).toBe('number');
 						expect(typeof article_img_url).toBe('string');
 						expect(typeof article_id).toBe('number');
@@ -116,11 +116,69 @@ describe('GET: /api/articles', () => {
 	});
 	test('200: Responds with an array list of article objects sorted by date in descending order ', () => {
 		return request(app)
-			.get('/api/articles?sort_by=date')
+			.get('/api/articles')
 			.expect(200)
 			.then(({ body }) => {
 				expect(body.articles.length).toBe(13);
 				expect(body.articles).toBeSortedBy('created_at', { descending: true });
 			});
+	});
+});
+describe('GET:/api/articles/:article_id/comments', () => {
+	test('200: Responds with an array of comments with the correct properties  ', () => {
+		return request(app)
+			.get('/api/articles/9/comments')
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.comments.length).toBeGreaterThan(0);
+				body.comments.forEach((comment) => {
+					expect(comment.article_id).toBe(9);
+					expect(typeof comment.comment_id).toBe('number');
+					expect(typeof comment.votes).toBe('number');
+					expect(typeof comment.created_at).toBe('string');
+					expect(typeof comment.author).toBe('string');
+					expect(typeof comment.body).toBe('string');
+				});
+			});
+	});
+	test('200: Responds with an array of comments ordered by created_at, the most recent comments first ', () => {
+		return request(app)
+			.get('/api/articles/9/comments')
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.comments).toBeSortedBy('created_at', { descending: true });
+			});
+	});
+	test('200: Responds with an empty array if no comments exist', () => {
+		return request(app)
+			.get('/api/articles/2/comments')
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.comments).toEqual([]);
+			});
+	});
+	test('404: Responds with error if article_id does not exist', () => {
+		return request(app)
+			.get('/api/articles/888/comments')
+			.expect(404)
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('Not Found');
+			});
+	});
+	test('400: Responds with article_id is not a number', () => {
+		return request(app)
+			.get('/api/articles/notANumber/comments')
+			.expect(400)
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('bad request');
+			});
+	});
+});
+xdescribe('POST: /api/articles/:article_id/comments', () => {
+	test('201: Responds with the newly added comment', () => {
+		return request(app)
+			.get('/api/articles/1/comments')
+			.expect(201)
+			.then(({ body }) => {});
 	});
 });

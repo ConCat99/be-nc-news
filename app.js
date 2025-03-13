@@ -5,6 +5,8 @@ const {
 	getEndpoints,
 	getArticleByID,
 	getArticles,
+	getCommentsByArticleID,
+	addComment,
 } = require('./controllers/topics.controller');
 const {
 	handleServerErrors,
@@ -13,7 +15,7 @@ const {
 } = require('./controllers/errors.controllers');
 app.use(express.json());
 
-//routing endpoints
+//routing GET endpoints
 app.get('/api', getEndpoints);
 
 app.get('/api/topics', getTopics);
@@ -21,6 +23,10 @@ app.get('/api/topics', getTopics);
 app.get('/api/articles/:article_id', getArticleByID);
 
 app.get('/api/articles', getArticles);
+
+app.get('/api/articles/:article_id/comments', getCommentsByArticleID);
+
+app.post('/api/articles/:article_id/comments', addComment);
 
 //Catches requests to nonexistent routes
 app.all('/*', handleNotARoute);
