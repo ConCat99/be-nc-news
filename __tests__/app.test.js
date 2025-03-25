@@ -25,9 +25,10 @@ describe('GET /api', () => {
 	});
 	test('404: /*', () => {
 		return request(app)
-			.get('/api/*NotAPath')
+			.get('/aip')
 			.expect(404)
 			.then(({ body }) => {
+				console.log(body);
 				expect(body.msg).toBe('Not Found');
 			});
 	});
@@ -174,11 +175,63 @@ describe('GET:/api/articles/:article_id/comments', () => {
 			});
 	});
 });
-xdescribe('POST: /api/articles/:article_id/comments', () => {
-	test('201: Responds with the newly added comment', () => {
+
+// POST
+describe('POST: /api/articles/:article_id/comments', () => {
+	test('201: Inserts a new comment object into the database and responds with the inserted comment', () => {
 		return request(app)
-			.get('/api/articles/1/comments')
+			.post('/api/articles/1/comments')
 			.expect(201)
-			.then(({ body }) => {});
+			.send({
+				username: 'butter_bridge',
+				body: 'loren ipsum',
+			})
+			.then(({ body }) => {
+				const { comment } = body;
+				expect(comment.author).toBe('butter_bridge');
+				expect(comment.body).toBe('loren ipsum');
+				expect(comment.article_id).toBe(1);
+				expect(comment.votes).toBe(0);
+				expect(typeof comment.comment_id).toBe('number');
+				expect(typeof comment.created_at).toBe('string');
+			});
+	});
+	test('400: Responds with error if article_id is not a number', () => {
+		return request(app)
+			.get('/api/articles/notANumber/comments')
+			.expect(400)
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('bad request');
+			});
+	});
+	test('400: Responds with error message if request body is missing', () => {
+		return request(app)
+			.post('/api/articles/1/comments')
+			.expect(400)
+			.send({
+				username: 'butter_bridge',
+			})
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('Bad request: username and body cannot be empty');
+			});
+	});
+	test('400: Responds with error message if request username is missing', () => {
+		return request(app)
+			.post('/api/articles/1/comments')
+			.expect(400)
+			.send({
+				body: 'loren ipsum',
+			})
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('Bad request: username and body cannot be empty');
+			});
+	});
+	test('404: Responds with error if article_id does not exist', () => {
+		return request(app)
+			.get('/api/articles/888/comments')
+			.expect(404)
+			.then(({ body: { msg } }) => {
+				expect(msg).toBe('Not Found');
+			});
 	});
 });

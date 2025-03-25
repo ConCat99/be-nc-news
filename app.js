@@ -6,12 +6,13 @@ const {
 	getArticleByID,
 	getArticles,
 	getCommentsByArticleID,
-	addComment,
+	postComment,
 } = require('./controllers/topics.controller');
 const {
 	handleServerErrors,
 	handleNotARoute,
 	handleCustomErrors,
+	handlePsqlErrors,
 } = require('./controllers/errors.controllers');
 app.use(express.json());
 
@@ -26,13 +27,17 @@ app.get('/api/articles', getArticles);
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleID);
 
-// app.post('/api/articles/:article_id/comments', addComment);
+//routing POST endpoints
+app.post('/api/articles/:article_id/comments', postComment);
 
 //Catches requests to nonexistent routes
 app.all('/*', handleNotARoute);
 
 //Custom Error Handling
 app.use(handleCustomErrors);
+
+//PSQL Error handling
+app.use(handlePsqlErrors);
 
 //error handling
 app.use(handleServerErrors);

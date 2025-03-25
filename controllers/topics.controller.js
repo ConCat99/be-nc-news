@@ -3,7 +3,7 @@ const {
 	selectArticleByID,
 	selectAllArticles,
 	selectCommentsByArticleId,
-	checkArticleIdExists,
+	insertComment,
 } = require('../models/topics.models');
 const endpoints = require('../endpoints.json');
 const { param } = require('../app');
@@ -51,6 +51,16 @@ exports.getCommentsByArticleID = (req, res, next) => {
 		});
 };
 
-// exports.addComment = (req, res, next)=>{
+//POST
 
-// }
+exports.postComment = (req, res, next) => {
+	const { username, body } = req.body;
+	const { article_id } = req.params;
+	insertComment(username, body, article_id)
+		.then((comment) => {
+			res.status(201).send({ comment });
+		})
+		.catch((err) => {
+			next(err);
+		});
+};

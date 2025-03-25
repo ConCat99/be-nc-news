@@ -82,7 +82,7 @@ function createComments() {
     comment_id SERIAL PRIMARY KEY,
     article_id INT REFERENCES articles(article_id),
     body TEXT,
-    votes INT,
+    votes INT DEFAULT 0,
     author VARCHAR(50) REFERENCES users(username),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
