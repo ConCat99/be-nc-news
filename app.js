@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const {
 	getTopics,
@@ -14,6 +15,8 @@ const {
 	handleCustomErrors,
 	handlePsqlErrors,
 } = require('./controllers/errors.controllers');
+
+app.use(cors());
 app.use(express.json());
 
 //routing GET endpoints
